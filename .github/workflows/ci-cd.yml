@@ -21,7 +21,7 @@ jobs:
         EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}  # 從 GitHub Secrets 中獲取 SSH 密鑰
         HOST: ${{ secrets.HOST }}  # 目標主機地址
         USER: ${{ secrets.USER }}  # SSH 使用者名稱
-        PROJECT: ${{ secrets.PROJECT }}  # 專案目錄
+        PROJECT: ${{ secrets.PROJECT_NAME }}  # 專案目錄
       run: |
         echo "Deploying to production..."
 
