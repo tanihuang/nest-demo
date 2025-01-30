@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master  # 在主分支推送時觸發
+      - main  # 在主分支推送時觸發
   pull_request:
     branches:
-      - master  # 在對主分支的拉取請求時觸發
+      - main  # 在對主分支的拉取請求時觸發
 
 jobs:
   deploy:
@@ -42,7 +42,7 @@ jobs:
 
           # 強制拉取最新的代碼
           git fetch origin
-          git reset --hard origin/master
+          git reset --hard origin/main
 
           # 安裝依賴
           npm ci --no-audit --no-fund --prefer-offline

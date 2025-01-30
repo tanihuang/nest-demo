@@ -9,7 +9,7 @@ async function bootstrap() {
     app: AppModule,
     crypto: CryptoModule,
   };
-  const Module = moduleObj[process.env.SERVER_NAME] || AppModule;
+  const Module = moduleObj[process.env.NODE_MODULE] || AppModule;
   const logger = new Logger();
   const app = await NestFactory.create(Module, { cors: true });
   app.setGlobalPrefix('api');

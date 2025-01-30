@@ -18,7 +18,7 @@ console.log('node', process.env.NODE);
       autoSchemaFile: true,
     }),
     ConfigModule.forRoot({
-      envFilePath: [`.env.stage.${process.env.STAGE}`],
+      envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
     TasksModule,
     TypeOrmModule.forRootAsync({
