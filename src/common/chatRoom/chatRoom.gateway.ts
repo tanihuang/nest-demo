@@ -54,10 +54,13 @@ export class ChatRoomGateway {
   }
 
   @SubscribeMessage('getChatRoom')
-  async handleGetChatRoom(@MessageBody() userId: string) {
+  async handleGetChatRoom(
+    @MessageBody() userId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
     this.logger.log(`Received getChatRoom event for userId: ${userId}`);
     const chatRooms = await this.chatRoomService.getChatRoomByUser(userId);
-    this.server.emit('getChatRoom', chatRooms);
+    client.emit('getChatRoom', chatRooms);
   }
 
   @SubscribeMessage('addMemberToRoom')
@@ -86,8 +89,7 @@ export class ChatRoomGateway {
   ) {
     this.logger.log(`Received message: ${createChatDto}`);
     const message = await this.chatService.createChat(createChatDto);
-    this.server.to(createChatDto.chatRoomId).emit('message', message);
-    client.emit('createChat', message);
+    this.server.to(createChatDto.chatRoomId).emit('createChat', message);
   }
 
   @SubscribeMessage('getChat')
@@ -96,8 +98,8 @@ export class ChatRoomGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const { chatRoomId, page = 1, pageSize = 20 } = getChatDto;
-    const message = await this.chatService.getChat(chatRoomId, page, pageSize);
-    this.server.to(getChatDto.chatRoomId).emit('message', message);
-    client.emit('getChat', message);
+    const messages = await this.chatService.getChat(chatRoomId, page, pageSize);
+    this.server.to(getChatDto.chatRoomId).emit('message', messages);
+    client.emit('getChat', messages);
   }
 }
