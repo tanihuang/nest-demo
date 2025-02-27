@@ -15,35 +15,14 @@ export class ChatService {
     @InjectModel(ChatRoom.name) private chatRoomModel: Model<ChatRoom>,
   ) {}
 
-  async getChat(
-    chatRoomId: string,
-    page?: number,
-    pageSize?: number,
-  ): Promise<Chat[]> {
-    return this.chatModel
-      .find({ chatRoomId: new mongoose.Types.ObjectId(chatRoomId) })
-      .skip((page - 1) * pageSize) // 增加分页，跳过前面一定数量的消息
-      .limit(pageSize) // 每次返回固定数量的消息
-      .populate({
-        path: 'user', // 填充 `createdBy` 字段
-        select: 'uuid username -_id', // 只返回 `username` 字段
-        match: {}, // 默认不设置其他条件
-        options: { strictPopulate: false }, // 允许非 `_id` 字段的填充
-      })
-      .sort({ timestamp: 1 }) // 按时间戳排序 1 or -1
-      .exec();
-  }
-
   async createChat(createChatDto: CreateChatDto): Promise<Chat> {
     const { chatRoomId, createdBy, content } = createChatDto;
-    this.logger.log(`createChat data: ${JSON.stringify(createChatDto)}`);
     const message = new this.chatModel({
       ...createChatDto,
       chatRoomId: new Types.ObjectId(chatRoomId),
     });
 
     await message.save();
-
     await this.chatRoomModel.updateOne(
       { chatRoomId: new Types.ObjectId(chatRoomId) },
       {
@@ -54,7 +33,53 @@ export class ChatService {
         },
       },
     );
-
     return message;
+  }
+
+  async getChat(chatRoomId: string, page = 1, pageSize = 20) {
+    return this.chatModel.aggregate([
+      { $match: { chatRoomId: new mongoose.Types.ObjectId(chatRoomId) } },
+      {
+        $lookup: {
+          from: 'auth',
+          localField: 'createdBy',
+          foreignField: 'uuid',
+          as: 'user',
+        },
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          createdBy: 1,
+          chatRoomId: 1,
+          content: 1,
+          timestamp: 1,
+          user: {
+            uuid: 1,
+            username: 1,
+          },
+        },
+      },
+      {
+        $addFields: {
+          day: {
+            $toLong: {
+              $dateTrunc: { date: { $toDate: '$timestamp' }, unit: 'day' },
+            },
+          },
+        },
+      },
+      { $sort: { timestamp: 1 } },
+      {
+        $group: {
+          _id: '$day',
+          messages: { $push: '$$ROOT' },
+        },
+      },
+      { $sort: { _id: -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]);
   }
 }
