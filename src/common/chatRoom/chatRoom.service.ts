@@ -39,7 +39,6 @@ export class ChatRoomService {
     const parseMembers = members.map((item) => item.uuid);
     return this.chatRoomModel
       .findOne({
-        createdBy,
         'members.uuid': { $all: parseMembers },
         $expr: { $eq: [{ $size: '$members' }, members.length] },
       })

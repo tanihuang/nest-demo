@@ -49,20 +49,17 @@ export class ChatRoomGateway
     this.logger.log(`handleDisconnect`);
   }
 
-  private async handleSocket(
-    members: any[],
-    chatRoomId: string,
-    chatRoom: any,
-  ) {
+  private async handleSocket(members: any[], chatRoomId: string) {
     const activeSocket = new Map(
       (await this.server.fetchSockets()).map((item) => [item.id, item]),
     );
-    members.forEach(({ uuid }) => {
-      const socketId = this.socketMap.get(uuid);
-      this.logger.log(`socketId ${JSON.stringify(socketId)}`);
-      activeSocket.get(socketId)?.join(chatRoomId);
-    });
-    this.server.to(chatRoomId).emit('updateChatRoomList', chatRoom);
+    await Promise.all(
+      members.map(async ({ uuid }) => {
+        const socketId = this.socketMap.get(uuid);
+        const socket = activeSocket.get(socketId);
+        if (socket) await socket.join(chatRoomId);
+      }),
+    );
   }
 
   @SubscribeMessage('createChatRoom')
@@ -85,7 +82,10 @@ export class ChatRoomGateway
       await this.chatRoomService.createChatRoom(createChatRoomDto);
     const chatRoomId = chatRoom.chatRoomId.toString();
 
-    await this.handleSocket(members, chatRoomId, chatRoom);
+    // client.join(chatRoomId);
+    // client.emit('updateChatRoomList', chatRoom);
+    await this.handleSocket(members, chatRoomId);
+    this.server.to(chatRoomId).emit('updateChatRoomList', chatRoom);
   }
 
   @SubscribeMessage('getChatRoomList')

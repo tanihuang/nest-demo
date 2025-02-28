@@ -27,9 +27,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     try {
       const decoded = await this.jwtService.verifyAsync(token);
       if (decoded) {
-        // 將用戶信息添加到請求中
         request.user = {
-          id: decoded.id, // 你可以在這裡使用用戶 ID
+          id: decoded.id,
           username: decoded.username,
         };
         return true;

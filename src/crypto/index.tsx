@@ -6,10 +6,8 @@ export const aiscoreBaseball = async () => {
     const response = await axios.get('https://www.aiscore.com/zht/baseball');
     console.log('test', response.data);
 
-    // 使用 cheerio 解析 HTML
     const $ = cheerio.load(response.data);
 
-    // 示例：获取网页标题
     const title = $('title').text();
     console.log('Page Title:', title);
   } catch (error) {
@@ -17,5 +15,4 @@ export const aiscoreBaseball = async () => {
   }
 };
 
-// 调用函数
 aiscoreBaseball();

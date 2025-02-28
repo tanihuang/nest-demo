@@ -8,7 +8,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { WebsocketService } from './websocket.service';
 
-@WebSocketGateway({ cors: true }) // 指定 WebSocket 路徑和 CORS 設定
+@WebSocketGateway({ cors: true })
 export class WebsocketGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
@@ -32,7 +32,7 @@ export class WebsocketGateway
     payload: { content: string },
   ): Promise<void> {
     console.log('Received message(node):', payload.content);
-    await this.websocketService.saveWebsocket(payload.content); // 使用 Service 處理邏輯
-    this.server.emit('message', payload.content); // 將消息發送給所有連接的客戶端
+    await this.websocketService.saveWebsocket(payload.content);
+    this.server.emit('message', payload.content);
   }
 }

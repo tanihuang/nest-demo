@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema({ collection: 'currency' }) // 資料庫名稱
+@Schema({ collection: 'currency' })
 export class Currency extends Document {
   @Prop({ required: true })
   name: string;

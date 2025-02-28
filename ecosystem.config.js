@@ -16,7 +16,6 @@ module.exports = {
       watch: false,
       max_memory_restart: '1G',
       env: {
-        // 🌟 預設開發環境
         NODE_ENV: 'dev',
         NODE_MODULE: process.env.NODE_MODULE,
         DB_HOST: process.env.DB_HOST,
@@ -25,7 +24,6 @@ module.exports = {
         DB_NAME: process.env.DB_NAME,
       },
       env_production: {
-        // 🌟 正式環境
         NODE_ENV: 'prod',
         NODE_MODULE: process.env.NODE_MODULE,
         DB_HOST: process.env.DB_HOST,

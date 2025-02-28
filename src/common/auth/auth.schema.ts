@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
-@Schema({ collection: 'auth', timestamps: true }) // 資料庫名稱
+@Schema({ collection: 'auth', timestamps: true })
 export class Auth extends Document {
   @Prop({ required: true, unique: true, default: uuidv4 })
   uuid: string;
