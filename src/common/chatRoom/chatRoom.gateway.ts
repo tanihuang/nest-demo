@@ -85,7 +85,6 @@ export class ChatRoomGateway
       await this.chatRoomService.createChatRoom(createChatRoomDto);
     const chatRoomId = chatRoom.chatRoomId.toString();
 
-    client.join(chatRoomId);
     await this.handleSocket(members, chatRoomId, chatRoom);
   }
 
