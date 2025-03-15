@@ -16,11 +16,11 @@ export class CreateUserDto {
   @MaxLength(20)
   username: string;
 
-  @IsString()
-  @MinLength(8)
-  @MaxLength(32)
+  @IsString({ message: 'Password must be a string.' })
+  @MinLength(8, { message: 'At least 8 characters.' })
+  @MaxLength(32, { message: 'Max 32 characters.' })
   @Matches(/^(?=.*[a-z])(?=.*\d).*$/, {
-    message: 'password is too weak',
+    message: 'A minimum of 1 lower case letter and number.',
   })
   password: string;
 
