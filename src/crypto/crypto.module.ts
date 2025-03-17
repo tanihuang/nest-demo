@@ -4,7 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CurrencyController } from './currency/currency.controller';
 import { CurrencyModule } from './currency/currency.module';
-import { WebsocketModule } from '../common/websocket/websocket.module';
 import { ChatRoomModule } from '../common/chatRoom/chatRoom.module';
 import { AuthModule } from 'src/common/auth/auth.module';
 
