@@ -47,7 +47,7 @@ export class ChatRoom extends Document {
   lastMessageTimestamp: number;
 
   @Prop({ type: Number, default: 0 })
-  groupType: number;
+  group: number;
 
   @Prop({
     type: Date,

@@ -42,5 +42,5 @@ export class CreateChatRoomDto {
   @IsNotEmpty()
   @IsInt()
   @Min(0)
-  groupType: number;
+  group: number;
 }
